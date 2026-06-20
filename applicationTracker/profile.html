@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Application Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <main class="container fade-in-up">
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div>
+                <h1>Profile Settings</h1>
+                <p style="color: var(--text-secondary);">Customize your tracking profile and manage your application analytics.</p>
+            </div>
+
+            <div class="detail-grid">
+                <!-- Left Column (User Card & Analytics Summary) -->
+                <div class="detail-sidebar">
+                    <!-- Profile Card -->
+                    <div class="glass-card profile-card">
+                        <div class="profile-avatar" id="profile-avatar-char">A</div>
+                        <h2 id="profile-name-title" style="margin-bottom: 0.2rem; font-size: 1.5rem;">User Name</h2>
+                        <p id="profile-role-title" style="color: var(--text-secondary); font-size: 0.95rem; font-weight: 500;">Role Title</p>
+                        <p id="profile-location-title" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">📍 Location</p>
+
+                        <!-- User Profile stats -->
+                        <div class="profile-stats-dashboard">
+                            <div class="profile-stat">
+                                <span class="profile-stat-val" id="profile-total-apps">0</span>
+                                <span class="profile-stat-lbl">Tracked</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="profile-stat-val" id="profile-interviews">0</span>
+                                <span class="profile-stat-lbl">Interviews</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="profile-stat-val" id="profile-offers">0</span>
+                                <span class="profile-stat-lbl">Offers</span>
+                            </div>
+                        </div>
+
+                        <!-- Skills Tags display -->
+                        <div style="width: 100%; text-align: left;">
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">Skills / Tech Stack</label>
+                            <div class="profile-skills-tags" id="profile-skills-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System maintenance settings -->
+                    <div class="glass-card">
+                        <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Data Management</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                            Need to restart or load mockup files for validation? You can reset your local application records here.
+                        </p>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button id="reset-data-btn" class="btn btn-secondary" style="width: 100%;">Reset Demo Applications</button>
+                            <button id="clear-data-btn" class="btn btn-danger" style="width: 100%;">Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (Edit Settings Form) -->
+                <div class="detail-main">
+                    <div class="glass-card">
+                        <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; font-size: 1.4rem;">Candidate Information</h2>
+                        
+                        <form id="profile-edit-form">
+                            <div class="form-grid">
+                                <!-- Name -->
+                                <div class="form-group">
+                                    <label for="profile-name-input">Full Name</label>
+                                    <input type="text" id="profile-name-input" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="form-group">
+                                    <label for="profile-email-input">Email Address</label>
+                                    <input type="email" id="profile-email-input" required>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="form-group">
+                                    <label for="profile-role-input">Target Job Role / Title</label>
+                                    <input type="text" id="profile-role-input" placeholder="e.g. Aspiring Frontend Developer">
+                                </div>
+
+                                <!-- Location -->
+                                <div class="form-group">
+                                    <label for="profile-location-input">Target Location</label>
+                                    <input type="text" id="profile-location-input">
+                                </div>
+
+                                <!-- Target Salary -->
+                                <div class="form-group">
+                                    <label for="profile-salary-input">Target Compensation</label>
+                                    <input type="text" id="profile-salary-input" placeholder="e.g. $45/hr or $90,000/yr">
+                                </div>
+
+                                <!-- Skills -->
+                                <div class="form-group full-width">
+                                    <label for="profile-skills-input">Skills / Tech Stack (comma separated)</label>
+                                    <input type="text" id="profile-skills-input" placeholder="e.g. HTML, CSS, JavaScript, React, Python">
+                                </div>
+
+                                <!-- Save Button -->
+                                <div class="form-buttons">
+                                    <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="data.js"></script>
+    <script src="navbar.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            // Load application stats
+            const apps = window.getApplications ? window.getApplications() : [];
+            const profile = window.getUserProfile ? window.getUserProfile() : {};
+
+            // Initialize view
+            populateProfile(profile, apps);
+
+            // Setup form submit
+            document.getElementById('profile-edit-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const updatedProfile = {
+                    name: document.getElementById('profile-name-input').value.trim(),
+                    email: document.getElementById('profile-email-input').value.trim(),
+                    role: document.getElementById('profile-role-input').value.trim(),
+                    location: document.getElementById('profile-location-input').value.trim(),
+                    targetSalary: document.getElementById('profile-salary-input').value.trim(),
+                    skills: document.getElementById('profile-skills-input').value.trim()
+                };
+
+                if (window.saveUserProfile) {
+                    window.saveUserProfile(updatedProfile);
+                    showToast('Profile updated successfully!', 'success');
+                    populateProfile(updatedProfile, apps);
+                }
+            });
+
+            // Reset demo data handler
+            document.getElementById('reset-data-btn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to reset all applications and profile data to original demo profiles?')) {
+                    if (window.resetAllData) {
+                        const resetResult = window.resetAllData();
+                        showToast('Restored original demo data!', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1200);
+                    }
+                }
+            });
+
+            // Clear all data handler
+            document.getElementById('clear-data-btn').addEventListener('click', () => {
+                if (confirm('Warning: This will clear all records from local storage. Are you sure you want to start from scratch?')) {
+                    localStorage.clear();
+                    showToast('Cleared all data. Starting fresh!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
+                }
+            });
+
+            function populateProfile(prof, appsList) {
+                // Populate titles
+                document.getElementById('profile-name-title').textContent = prof.name || 'Anonymous User';
+                document.getElementById('profile-role-title').textContent = prof.role || 'Job Candidate';
+                document.getElementById('profile-location-title').textContent = prof.location ? `📍 ${prof.location}` : '📍 Remote';
+                
+                // Avatar character letter
+                const avatarChar = document.getElementById('profile-avatar-char');
+                avatarChar.textContent = prof.name ? prof.name.charAt(0).toUpperCase() : 'A';
+
+                // Populate Form Fields
+                document.getElementById('profile-name-input').value = prof.name || '';
+                document.getElementById('profile-email-input').value = prof.email || '';
+                document.getElementById('profile-role-input').value = prof.role || '';
+                document.getElementById('profile-location-input').value = prof.location || '';
+                document.getElementById('profile-salary-input').value = prof.targetSalary || '';
+                document.getElementById('profile-skills-input').value = prof.skills || '';
+
+                // Populate Skills Tags
+                const skillsContainer = document.getElementById('profile-skills-container');
+                skillsContainer.innerHTML = '';
+                
+                if (prof.skills) {
+                    const skillList = prof.skills.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                    if (skillList.length > 0) {
+                        skillList.forEach(skill => {
+                            const span = document.createElement('span');
+                            span.className = 'skill-tag';
+                            span.textContent = skill;
+                            skillsContainer.appendChild(span);
+                        });
+                    } else {
+                        skillsContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem;">No skills added yet.</div>';
+                    }
+                } else {
+                    skillsContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem;">No skills added yet.</div>';
+                }
+
+                // Populate Stats Panel
+                const totalCount = appsList.length;
+                const interviewCount = appsList.filter(a => a.status === 'Interviewing').length;
+                const offerCount = appsList.filter(a => a.status === 'Offer').length;
+
+                document.getElementById('profile-total-apps').textContent = totalCount;
+                document.getElementById('profile-interviews').textContent = interviewCount;
+                document.getElementById('profile-offers').textContent = offerCount;
+            }
+
+            function showToast(message, type = 'success') {
+                if (!toast) return;
+                toastMessage.textContent = message;
+                toastIcon.textContent = type === 'success' ? '✓' : '✗';
+                toast.className = `toast show ${type}`;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

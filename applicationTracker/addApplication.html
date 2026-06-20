@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Application - Application Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <main class="container fade-in-up">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="form-title">
+                <h1>Add Application</h1>
+                <p style="color: var(--text-secondary);">Enter the details of the internship you've applied to.</p>
+            </div>
+
+            <div class="glass-card">
+                <form id="add-app-form">
+                    <div class="form-grid">
+                        <!-- Company Name -->
+                        <div class="form-group">
+                            <label for="company">Company Name *</label>
+                            <input type="text" id="company" required placeholder="e.g. Google, Stripe, Meta">
+                        </div>
+
+                        <!-- Role Title -->
+                        <div class="form-group">
+                            <label for="role">Job Role / Title *</label>
+                            <input type="text" id="role" required placeholder="e.g. Software Engineer Intern">
+                        </div>
+
+                        <!-- Status Selection -->
+                        <div class="form-group">
+                            <label for="status">Application Status *</label>
+                            <select id="status" required>
+                                <option value="Applied">Applied</option>
+                                <option value="Interviewing">Interviewing</option>
+                                <option value="Offer">Offer</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="e.g. New York, NY (Hybrid) or Remote">
+                        </div>
+
+                        <!-- Date Applied -->
+                        <div class="form-group">
+                            <label for="dateApplied">Date Applied</label>
+                            <input type="date" id="dateApplied">
+                        </div>
+
+                        <!-- Deadline -->
+                        <div class="form-group">
+                            <label for="deadline">Deadline</label>
+                            <input type="date" id="deadline">
+                        </div>
+
+                        <!-- Salary / Compensation -->
+                        <div class="form-group">
+                            <label for="salary">Compensation / Salary</label>
+                            <input type="text" id="salary" placeholder="e.g. $45/hr or unpaid">
+                        </div>
+
+                        <!-- Job Listing URL -->
+                        <div class="form-group">
+                            <label for="jobLink">Job Listing Link</label>
+                            <input type="url" id="jobLink" placeholder="https://careers.company.com/job/...">
+                        </div>
+
+                        <!-- Notes / Description -->
+                        <div class="form-group full-width">
+                            <label for="notes">Notes & Key Details</label>
+                            <textarea id="notes" placeholder="Paste the job description, referral details, or preparation notes here..."></textarea>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="form-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Application</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="data.js"></script>
+    <script src="navbar.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pre-fill today's date in 'Date Applied'
+            const today = new Date().toISOString().split('T')[0];
+            const dateAppliedInput = document.getElementById('dateApplied');
+            if (dateAppliedInput) {
+                dateAppliedInput.value = today;
+            }
+
+            const form = document.getElementById('add-app-form');
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Build application object
+                const appData = {
+                    company: document.getElementById('company').value.trim(),
+                    role: document.getElementById('role').value.trim(),
+                    status: document.getElementById('status').value,
+                    location: document.getElementById('location').value.trim(),
+                    dateApplied: document.getElementById('dateApplied').value,
+                    deadline: document.getElementById('deadline').value,
+                    salary: document.getElementById('salary').value.trim(),
+                    jobLink: document.getElementById('jobLink').value.trim(),
+                    notes: document.getElementById('notes').value.trim(),
+                };
+
+                // Save application
+                if (window.saveApplication) {
+                    window.saveApplication(appData);
+                    showToast('Application added successfully!', 'success');
+                    
+                    // Delay redirect slightly so user sees the toast
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1200);
+                } else {
+                    console.error('saveApplication is not defined in data.js');
+                }
+            });
+
+            function showToast(message, type = 'success') {
+                if (!toast) return;
+                toastMessage.textContent = message;
+                toastIcon.textContent = type === 'success' ? '✓' : '✗';
+                toast.className = `toast show ${type}`;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

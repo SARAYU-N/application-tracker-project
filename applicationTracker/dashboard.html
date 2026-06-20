@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Application Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <main class="container fade-in-up">
+        <!-- Header area -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1>Dashboard</h1>
+                <p style="color: var(--text-secondary);">Manage and monitor your ongoing applications.</p>
+            </div>
+            <a href="addApplication.html" class="btn btn-primary">+ Add New Application</a>
+        </div>
+
+        <!-- Metrics cards -->
+        <section class="dashboard-grid" id="stats-grid">
+            <div class="stat-card total">
+                <span class="stat-label">Total Applications</span>
+                <span class="stat-value" id="stats-total">0</span>
+            </div>
+            <div class="stat-card applied">
+                <span class="stat-label">Pending / Applied</span>
+                <span class="stat-value" id="stats-applied">0</span>
+            </div>
+            <div class="stat-card interview">
+                <span class="stat-label">Interviewing</span>
+                <span class="stat-value" id="stats-interviewing">0</span>
+            </div>
+            <div class="stat-card offers">
+                <span class="stat-label">Offers Received</span>
+                <span class="stat-value" id="stats-offers">0</span>
+            </div>
+        </section>
+
+        <!-- Filters / Search -->
+        <section class="filter-bar">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-bar" class="search-input" placeholder="Search by company or role...">
+            </div>
+            <div class="filters">
+                <select id="status-filter" class="filter-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interviewing">Interviewing</option>
+                    <option value="Offer">Offer</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <select id="sort-filter" class="filter-select">
+                    <option value="newest">Newest Applied</option>
+                    <option value="oldest">Oldest Applied</option>
+                    <option value="deadline">Closest Deadline</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Grid of applications -->
+        <section class="applications-grid" id="applications-container">
+            <!-- Dynamically populated in dashboard.js -->
+        </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="data.js"></script>
+    <script src="navbar.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

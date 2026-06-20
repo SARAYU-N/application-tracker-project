@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Internship Application Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Container injected here dynamically -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+        <section class="hero-section fade-in-up">
+            <h1 class="hero-title">Level Up Your<br><span style="background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Internship Hunt</span></h1>
+            <p class="hero-subtitle">
+                Track applications, organize interview timelines, monitor deadlines, and land your dream job with our high-performance application tracker.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="dashboard.html" class="btn btn-primary">Open Dashboard →</a>
+                <a href="addApplication.html" class="btn btn-secondary">Add Application</a>
+            </div>
+        </section>
+
+        <!-- Feature Points Showcase -->
+        <section class="feature-grid fade-in-up" style="animation-delay: 0.2s;">
+            <div class="glass-card feature-card">
+                <div class="feature-icon">📁</div>
+                <h3 style="margin-bottom: 0.5rem;">Centralized tracking</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    Store all your internship info in one safe dashboard. No more messy spreadsheets or lost emails.
+                </p>
+            </div>
+            <div class="glass-card feature-card">
+                <div class="feature-icon">⏳</div>
+                <h3 style="margin-bottom: 0.5rem;">Visual timelines</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    Track your status dynamically from Applied to Interviewing, Offer, or Rejection with auto-generated history logs.
+                </p>
+            </div>
+            <div class="glass-card feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 style="margin-bottom: 0.5rem;">Analytics & Profile</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    Monitor your key application statistics and customize your student candidate profile in one click.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Essential Scripts -->
+    <script src="data.js"></script>
+    <script src="navbar.js"></script>
+</body>
+</html>

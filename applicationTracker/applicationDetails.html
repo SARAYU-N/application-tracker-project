@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details - Application Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <main class="container fade-in-up">
+        <!-- Main details wrapper (hidden if no ID selected, shown if ID exists) -->
+        <div id="details-view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <a href="dashboard.html" style="color: var(--accent-primary); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">← Back to Dashboard</a>
+                    <h1 id="app-title-header" style="margin-top: 0.5rem; margin-bottom: 0;">Company Name</h1>
+                    <p id="app-role-header" style="color: var(--text-secondary); font-size: 1.1rem; font-weight: 500;">Role / Position</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="delete-app-btn" class="btn btn-danger">Delete Application</button>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- Left Column (Core Details & Notes) -->
+                <div class="detail-main">
+                    <!-- Core Details card -->
+                    <div class="glass-card">
+                        <h2 style="margin-bottom: 1.5rem; font-size: 1.4rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Job Specifications</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Location</label>
+                                <div id="detail-location" class="info-value" style="font-size: 1.05rem;">-</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Salary / Pay</label>
+                                <div id="detail-salary" class="info-value" style="font-size: 1.05rem;">-</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Date Applied</label>
+                                <div id="detail-date-applied" class="info-value" style="font-size: 1.05rem;">-</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Deadline</label>
+                                <div id="detail-deadline" class="info-value" style="font-size: 1.05rem;">-</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Job Listing Link</label>
+                                <div id="detail-job-link">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes & Preparation details -->
+                    <div class="glass-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                            <h2 style="margin: 0; font-size: 1.4rem;">Notes & Resources</h2>
+                            <button id="save-notes-btn" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Save Notes</button>
+                        </div>
+                        <textarea id="detail-notes" style="width: 100%; min-height: 180px; font-size: 0.95rem; line-height: 1.6;" placeholder="Add job details, interview questions, questions to ask the interviewer, or referral contact info..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Right Column (Status & Timeline) -->
+                <div class="detail-sidebar">
+                    <!-- Status quick edit card -->
+                    <div class="glass-card" style="padding: 2rem;">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 1rem;">Application Status</h2>
+                        <div class="form-group" style="margin-bottom: 1.2rem;">
+                            <select id="status-quick-select" style="font-size: 1rem; font-weight: 600; padding: 0.8rem 1rem;">
+                                <option value="Applied">Applied</option>
+                                <option value="Interviewing">Interviewing</option>
+                                <option value="Offer">Offer</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <button id="update-status-btn" class="btn btn-primary" style="width: 100%;">Update Status</button>
+                    </div>
+
+                    <!-- Timeline history tracker -->
+                    <div class="glass-card" style="padding: 2rem;">
+                        <h2 style="font-size: 1.3rem; margin-bottom: 1rem;">Timeline History</h2>
+                        <div class="timeline" id="detail-timeline-container">
+                            <!-- Populated in scripts -->
+                        </div>
+
+                        <!-- Add to timeline form -->
+                        <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-glass); padding-top: 1rem;">
+                            <label style="font-size: 0.85rem; display: block; margin-bottom: 0.4rem;">Log New Event</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="new-timeline-event" placeholder="e.g. Received OA invitation" style="padding: 0.5rem 0.8rem; font-size: 0.85rem; flex-grow: 1;">
+                                <button id="add-timeline-event-btn" class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">Log</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selection placeholder view (shown if no ID or invalid ID) -->
+        <div id="selection-view" style="display: none; max-width: 600px; margin: 4rem auto 0 auto;">
+            <div class="glass-card text-center" style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                <h2>Select an Application</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    You haven't selected an application to view. Choose an ongoing tracking profile below to inspect details, logs, and notes.
+                </p>
+                <div class="form-group" style="margin-bottom: 1.5rem; text-align: left;">
+                    <label for="select-app-dropdown">Choose Application</label>
+                    <select id="select-app-dropdown">
+                        <option value="">-- Select --</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="dashboard.html" class="btn btn-secondary">Go to Dashboard</a>
+                    <button id="load-app-btn" class="btn btn-primary">Load Details</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Essential Scripts -->
+    <script src="data.js"></script>
+    <script src="navbar.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailsView = document.getElementById('details-view');
+            const selectionView = document.getElementById('selection-view');
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('id');
+
+            // Load all apps to check matching ID or build dropdown
+            const apps = window.getApplications ? window.getApplications() : [];
+
+            // Identify if appId is valid
+            const selectedApp = appId ? (window.getApplicationById ? window.getApplicationById(appId) : null) : null;
+
+            if (selectedApp) {
+                // Show details card
+                detailsView.style.display = 'block';
+                populateDetails(selectedApp);
+                setupDetailsListeners(selectedApp);
+            } else {
+                // Show dropdown select card
+                selectionView.style.display = 'block';
+                populateDropdown(apps);
+                setupSelectionListeners();
+            }
+
+            // Populate details view elements
+            function populateDetails(app) {
+                document.getElementById('app-title-header').textContent = app.company;
+                document.getElementById('app-role-header').textContent = app.role;
+                document.getElementById('detail-location').textContent = app.location || 'Remote/Hybrid';
+                document.getElementById('detail-salary').textContent = app.salary || 'Not specified';
+                document.getElementById('detail-date-applied').textContent = app.dateApplied ? formatDate(app.dateApplied) : 'Not specified';
+                document.getElementById('detail-deadline').textContent = app.deadline ? formatDate(app.deadline) : 'Not specified';
+                document.getElementById('detail-notes').value = app.notes || '';
+                document.getElementById('status-quick-select').value = app.status;
+
+                // Job Listing link helper
+                const linkDiv = document.getElementById('detail-job-link');
+                if (app.jobLink) {
+                    linkDiv.innerHTML = `<a href="${escapeHTML(app.jobLink)}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${escapeHTML(app.jobLink)} ↗</a>`;
+                } else {
+                    linkDiv.textContent = 'Not specified';
+                    linkDiv.style.color = 'var(--text-muted)';
+                }
+
+                // Render Timeline
+                renderTimeline(app.timeline || []);
+            }
+
+            function renderTimeline(timeline) {
+                const timelineContainer = document.getElementById('detail-timeline-container');
+                timelineContainer.innerHTML = '';
+
+                if (timeline.length === 0) {
+                    timelineContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem;">No history logged yet.</div>';
+                    return;
+                }
+
+                // Sort timeline newest first
+                const sortedTimeline = [...timeline].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedTimeline.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'timeline-item';
+                    itemDiv.innerHTML = `
+                        <div class="timeline-date">${formatDate(item.date)}</div>
+                        <div class="timeline-content">${escapeHTML(item.event)}</div>
+                    `;
+                    timelineContainer.appendChild(itemDiv);
+                });
+            }
+
+            function setupDetailsListeners(app) {
+                // Save Notes handler
+                document.getElementById('save-notes-btn').addEventListener('click', () => {
+                    const notesValue = document.getElementById('detail-notes').value.trim();
+                    app.notes = notesValue;
+                    if (window.saveApplication) {
+                        window.saveApplication(app);
+                        showToast('Notes saved successfully!', 'success');
+                    }
+                });
+
+                // Update Status handler
+                document.getElementById('update-status-btn').addEventListener('click', () => {
+                    const statusVal = document.getElementById('status-quick-select').value;
+                    if (app.status !== statusVal) {
+                        app.status = statusVal;
+                        if (window.saveApplication) {
+                            const updatedApp = window.saveApplication(app);
+                            showToast(`Status updated to ${statusVal}!`, 'success');
+                            // Refresh layout with the new history timelines
+                            populateDetails(updatedApp);
+                        }
+                    } else {
+                        showToast('Status is already set to ' + statusVal, 'error');
+                    }
+                });
+
+                // Add Custom Event handler
+                document.getElementById('add-timeline-event-btn').addEventListener('click', () => {
+                    const eventInput = document.getElementById('new-timeline-event');
+                    const eventText = eventInput.value.trim();
+                    if (!eventText) return;
+
+                    const today = new Date().toISOString().split('T')[0];
+                    if (!app.timeline) app.timeline = [];
+                    
+                    app.timeline.push({
+                        date: today,
+                        event: eventText
+                    });
+
+                    if (window.saveApplication) {
+                        const updatedApp = window.saveApplication(app);
+                        eventInput.value = '';
+                        showToast('Event logged in timeline!', 'success');
+                        populateDetails(updatedApp);
+                    }
+                });
+
+                // Delete handler
+                document.getElementById('delete-app-btn').addEventListener('click', () => {
+                    if (confirm(`Are you sure you want to permanently delete your application for ${app.company}?`)) {
+                        if (window.deleteApplication) {
+                            window.deleteApplication(app.id);
+                            showToast('Application deleted successfully!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 1200);
+                        }
+                    }
+                });
+            }
+
+            // Selection Dropdown population
+            function populateDropdown(appsList) {
+                const dropdown = document.getElementById('select-app-dropdown');
+                appsList.forEach(a => {
+                    const option = document.createElement('option');
+                    option.value = a.id;
+                    option.textContent = `${a.company} - ${a.role} (${a.status})`;
+                    dropdown.appendChild(option);
+                });
+            }
+
+            function setupSelectionListeners() {
+                document.getElementById('load-app-btn').addEventListener('click', () => {
+                    const dropdownVal = document.getElementById('select-app-dropdown').value;
+                    if (dropdownVal) {
+                        window.location.href = `applicationDetails.html?id=${dropdownVal}`;
+                    } else {
+                        alert('Please select an application to view details.');
+                    }
+                });
+            }
+
+            // Toast helper
+            function showToast(message, type = 'success') {
+                if (!toast) return;
+                toastMessage.textContent = message;
+                toastIcon.textContent = type === 'success' ? '✓' : '✗';
+                toast.className = `toast show ${type}`;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                try {
+                    const date = new Date(dateStr);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                } catch (e) {
+                    return dateStr;
+                }
+            }
+
+            function escapeHTML(str) {
+                if (!str) return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+        });
+    </script>
+</body>
+</html>
